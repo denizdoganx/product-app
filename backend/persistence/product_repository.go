@@ -16,11 +16,17 @@ type ProductRepository struct {
 	dbPool *sql.DB
 }
 
+func NewProductRepository(dbPool *sql.DB) IProductRepository {
+	return &ProductRepository{
+		dbPool: dbPool,
+	}
+}
+
 func (productRepository *ProductRepository) GetAllProducts() []domain.Product {
 	productRows, err := productRepository.dbPool.Query("SELECT * FROM products")
 
 	if err != nil {
-		log.Error("Error while getting all products %v", err)
+		log.Printf("Error while getting all products %v", err)
 
 		return []domain.Product{}
 	}

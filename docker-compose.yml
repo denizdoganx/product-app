@@ -33,6 +33,21 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    image: migrate/migrate:latest
+    container_name: product-app-migrate
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+    volumes:
+      - ./backend/migrations:/migrations
+    command: [
+      "-path=/migrations",
+      "-database=mysql://product_user:strong_password_123@tcp(mysql:3306)/productapp?charset=utf8mb4&parseTime=True&loc=Local",
+      "up"
+    ]
+
   backend:
     build: ./backend
     container_name: product-app-backend
@@ -51,6 +66,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   frontend:
     image: nginx:latest
