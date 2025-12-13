@@ -14,15 +14,15 @@ import (
 
 func main() {
 	ctx := context.Background()
-	configurationManager := app.NewConfigurationManager()
-	databaseInstance := mysql.GetConnectionPool(ctx, configurationManager.MySqlConfig)
-
 	e := echo.New()
 
-	productRepository := persistence.NewProductRepository(databaseInstance)
+	configurationManager := app.NewConfigurationManager()
+
+	mySqlInstance := mysql.GetConnectionPool(ctx, configurationManager.MySqlConfig)
+
+	productRepository := persistence.NewProductRepository(mySqlInstance)
 	productService := service.NewProductService(productRepository)
 	productController := controller.NewProductController(productService)
-
 	productController.RegisterRoutes(e)
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

@@ -1,5 +1,3 @@
-window.ProductApp = {};
-
 ProductApp.ApiTestModule = () => {
     const self = {};
 
@@ -9,17 +7,11 @@ ProductApp.ApiTestModule = () => {
 
     self.setEvents = () => {
         document.getElementById('get-products-button').addEventListener('click', async () => {
-            const response = await fetch("http://localhost:9000/get-all-products");
-            const data = await response.json();
+            const response = await fetch("http://localhost:9000/api/v1/products");
+            const htmlText = await response.text();
 
             const list = document.getElementById("product-list");
-            list.innerHTML = "";
-
-            data.forEach(({ name, price }) => {
-                const li = document.createElement("li");
-                li.innerText = `${ name } - ${ price }`;
-                list.appnedChild(li);
-            });
+            list.innerText = htmlText;
         });
     };
 
